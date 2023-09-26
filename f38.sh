@@ -8,22 +8,34 @@
 # Credit goes to (with several changes and additions made by myself):
 # https://www.youtube.com/watch?v=uqsVb3lvtBg&ab_channel=Stephen%27sTechTalks 
 #
- 
- 
- 
+
+
+
+# exit and report the failure if any command fails
+exit_trap () {                                         # ---- (1)
+  local lc="$BASH_COMMAND" rc=$?
+  echo "Command [$lc] exited with code [$rc]"
+}
+
+trap exit_trap EXIT                                    # ---- (2)
+
+set -e 
+
+
+
 ###  Find disks to install to and give user a choice  ###
- 
+
 echo -e "\nDrives found:\n"
- 
+
 disks=$(fdisk -l | awk -F' |:' '/Disk \/dev\// { print $2 }')
- 
+
 for i in $disks; do
         size=$(fdisk -l | grep $i | awk -F' |:' '/Disk \/dev\// { print $4 }')
         printf "%s\t\t%sG\n" $i $size
 done
- 
+
 disks+=$(echo -e "\nquit")
- 
+
 echo -e "\nEnter number of drive to install to:\n"
  
 select choice in $disks
