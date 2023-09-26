@@ -48,7 +48,7 @@ done
 
 read -e -p "Enter the user name you'd like to create (blank will revert to 'user'): " user
 [[ "$user" == "" ]] && user=user
-
+user=user
 
 echo -e "\nSetup config:\n\ndisk: $disk\nuser: $user\n"
 read -e -p "This drive will be completely written over! Would you like to proceed (y or n)? " proceed
@@ -66,6 +66,14 @@ setenforce 0
 sgdisk --zap-all $disk
 
 sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' << EOF | gdisk $disk
+d
+1
+d
+2
+d
+3
+d
+4
 n     # Add a new partition
       # Partition number (Accept default: 1)
       # First sector (Accept default: varies)
@@ -291,6 +299,9 @@ grub2-mkconfig -o /boot/grub2/grub.cfg
 
 useradd -m $user
 usermod -aG wheel $user
+
+chown -R user:user /home/user
+mkdir - /home/user/.local/bin
 
 #  Default root password is '123456'
 echo 123456 | passwd $user --stdin
