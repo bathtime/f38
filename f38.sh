@@ -47,7 +47,10 @@ do
 done
 
 read -e -p "Enter the user name you'd like to create (blank will revert to 'user'): " user
-[[ "$user" == "" ]] && user=user
+
+if [[ "$user" == "" ]]; then
+   user=user
+fi
 user=user
 
 echo -e "\nSetup config:\n\ndisk: $disk\nuser: $user\n"
@@ -301,7 +304,7 @@ useradd -m $user
 usermod -aG wheel $user
 
 chown -R user:user /home/user
-mkdir - /home/user/.local/bin
+mkdir -p /home/user/.local/bin
 
 #  Default root password is '123456'
 echo 123456 | passwd $user --stdin
@@ -397,8 +400,6 @@ echo "Defaults editor=/usr/bin/vi" > /etc/sudoers.d/editor
  
  
 su $user
-
-sleep 1
 
 mkdir -p ~/.local/bin
 touch ~/.hushlogin
@@ -537,8 +538,10 @@ Font=Noto Sans Mono,14,-1,5,50,0,0,0,0,0
 Name=user
 Parent=FALLBACK/
 EOF
- 
- [Desktop Entry]
+
+mkdir -p ~/.local/share/applications
+cat > ~/.local/share/applications/btrfs-assistant.desktop << EOF
+[Desktop Entry]
 Name=Btrfs Assistant
 Comment=Change system settings
 Exec=sudo /usr/bin/btrfs-assistant
@@ -547,13 +550,14 @@ Type=Application
 Icon=btrfs-assistant
 Categories=System
 NoDisplay=false
-
+EOF
  
 ###  Epy reader  ###
- 
+
+mkdir -p ~/.config
+
 pip3 install epy-reader
 
-mkdir -p ~/.local/share/applications
 cat > ~/.local/share/applications/epy.desktop << EOF
 [Desktop Entry]
 Categories=System
