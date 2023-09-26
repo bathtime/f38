@@ -19,7 +19,7 @@ exit_trap () {                                         # ---- (1)
 trap exit_trap EXIT                                    # ---- (2)
 
 set -e 
-
+umount -n -R -l /mnt
 
 
 ###  Find disks to install to and give user a choice  ###
@@ -140,9 +140,7 @@ mount -o compress=zstd,noatime,subvol=@vartmp $disk'4' /mnt/var/tmp
 mount -o compress=zstd,noatime,subvol=@homecache $disk'4' /mnt/home/user/.cache
 mount -o compress=zstd,noatime,subvol=@snapshots $disk'4' /mnt/.snapshots
 
-chattr +C /mnt/var/log /mnt/var/cache /mnt/var/tmp /mnt/home/user/.cache
-
-chown -R user:user /mnt/home/user
+chattr +C /mnt/var/log /mnt/var/cache /mnt/var/tmp
 
 mount $disk'2' /mnt/boot
 mkdir -p /mnt/boot/efi
@@ -170,13 +168,8 @@ env | grep -i version
 
 ###  Make dnf faster  ###
 
-cat >> /etc/dnf/dnf.conf << EOF
-fastestmirror=1
-deltarpm=true
-max_parallel_downloads=10
-EOF
-cat /etc/dnf/dnf.conf
-
+DNF_VAR_fastestmirror=1
+DNV_VAR_maxparallel_downloads=10
 
 
 ###  Install core system  ###
@@ -640,9 +633,9 @@ sudo timedatectl set-ntp yes
 systemctl disable avahi-daemon.service bluetooth.service firewalld ModemManager.service NetworkManager.service
 
 dnf remove firewalld plymouth
+chattr +C /home/user/.cache
 
-' > ~/.local/bin/post-install.sh
-chmod +x ~/.local/bin/post-install.sh
+' > ~/.local/bin/post-install.shchmod +x ~/.local/bin/post-install.sh
 
 
 
