@@ -300,16 +300,35 @@ grub2-mkconfig -o /boot/grub2/grub.cfg
 
 #useradd -m $user
 #usermod -aG wheel $user
-useradd -mG $user
+useradd -mG $user -p '123456'
+
+
+
+
+
+
+
 
 ls -la /home/$user
-
 #chown -R user:user /home/user
+
+
+
+
+
+
+
+
 mkdir -p /home/user/.local/bin
 
-#  Default root password is '123456'
-echo 123456 | passwd $user --stdin
 
+
+
+
+
+
+
+#  Default root password is '123456'
 echo 123456 | passwd root --stdin
 
 
@@ -325,6 +344,7 @@ sudo sysctl -p
 
 ###  Last touches  ###
 
+# Use to check current locale:
 #locale -a
 
 LANG=en_US.UTF-8
@@ -402,7 +422,17 @@ echo "Defaults editor=/usr/bin/vi" > /etc/sudoers.d/editor
  
 su $user
 
+
+
+
+
 mkdir -p ~/.local/bin
+
+
+
+
+
+
 touch ~/.hushlogin
 
 
