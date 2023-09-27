@@ -92,50 +92,53 @@ setenforce 0
 
 sgdisk --zap-all $disk
 
-sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' << EOF | gdisk $disk
+sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' << EOF | fdisk $disk
 d     # Delete partition
-1     # Partition 1
+
 d     # Delete partition
-2     # Partition 2
+
 d     # Delete partition
-3     # Partition 3
+
 d     # Delete partition
-4     # Partition 4
+
+d     # Delete partition
+
+d     # Delete partition
+
 n     # Add a new partition
       # Partition number (Accept default: 1)
       # First sector (Accept default: varies)
 +600M # Last sector (Accept default: varies)
-ef00  # Type of partition (EFI system partition)
+Y     # Accept to erase previus filesystem
+t     # Type of filesystem
+      # Accept default
+uefi  # Type of partition (EFI system partition)
 n     # Add a new partition
       # Partition number (Accept default: 2)
       # Accept first sector
 +1G   # Have last sector be 1Gig
-      # Accept default GUID (Linux filesystem)
+Y     # Accept to erase previus filesystem
+t     # Type of filesystem
+      # Accept default
+linux # Accept default GUID (Linux filesystem)
 n     # Add a new partition
       # Partition number (Accept default: 3)
       # First sector (Accept default: varies)
 +8G   # Have last sector be 8Gig
-8200  # Type of partition (swap)
+Y     # Accept to erase previus filesystem
+t     # Type of filesystem
+      # Accept default
+swap  # Type of partition (swap)
 n     # Add a new partition
       # Partition number (Accept default: 4)
       # Accept first sector
       # Accept last sector (Default: remaining space)
-      # Type of parition (Linux Filesystem)
-c     # Name partition
-1     # Partition 1
-SYS   # Call it 'SYS' for EFI system partition
-c     # Name partition
-2     # Partition 2
-BOOT  # Call it 'BOOT'
-c     # Name Partition
-3     # Partition 3
-SWAP  # Call it 'SWAP'
-c     # Name parition
-4     # Partition 4
-ROOT  # Call it 'ROOT'
-p     # Print the table
+Y     # Accept to erase previus filesystem
+t     # Type of partition
+      # Accept default
+linux # Type of partition
+p     # Printout partitions
 w     # Write the changes
-y     # Confirm 'yes'
 EOF
 
 
