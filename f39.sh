@@ -17,22 +17,13 @@ mnt=/mnt
 
 # Stop script and bring user to bash if any command fails
 exit_trap () {
-
    local lc="$BASH_COMMAND" rc=$?
-
-   if [[ "$rc" -ne 0 ]]; then
-      #echo "Command [$lc] exited with code [$rc]"
-      echo -e "\nError found. Entering bash to fix. Type 'exit' to return to script.i\n"
-      bash
-      echo -e "\nExiting bash. Returning to script.\n"
-   fi
+   echo "Command [$lc] exited with code [$rc]"
 }
 
-#trap exit_trap EXIT
-trap exit_trap DEBUG
+trap exit_trap EXIT
 
-#set -e 
-set -Euo pipefail
+set -eEuo pipefail 
 
 
 
@@ -219,7 +210,6 @@ DNV_VAR_maxparallel_downloads=10
 ###  Install core system  ###
 
 dnf --installroot=$mnt --releasever=$VERSION_ID groupinstall -y core
-exit
 
 mv $mnt/etc/resolv.conf $mnt/etc/resolv.conf.org
 cp -L /etc/resolv.conf $mnt/etc
@@ -246,30 +236,6 @@ cat $mnt/etc/fstab
 echo $disk > $mnt/disk
 echo $user > $mnt/username
 
-
-
-###  Setup iwd script  ###
- 
-echo '#!/bin/bash
- 
-echo "This script should only need to be run once."
- 
-for dev in $(ls /sys/class/net); do
-   if [[ -d "/sys/class/net/$dev/wireless" ]]; then
-      wlan=$dev
-      iwctl --passphrase 13FDC4A93E3C station $wlan connect BELL364
-
-      if [ "$?" -eq 0 ]; then 
-          echo "Connection successful!"
-          exit
-      else
-          echo -e "Wireless device ($wlan) found.\nEnter your wireless network name:"
-          read network
-          iwctl station $wlan connect $network
-      fi
-   fi
-done' > $mnt/home/$user/.local/bin/setup-iwd.sh
-chmod +x $mnt/home/$user/.local/bin/setup-iwd.sh
 
 
 
@@ -592,6 +558,34 @@ echo -e "\rExiting chroot!\n"
 ##################################################
 ####              Setup scripts               ####
 ##################################################
+
+
+
+
+###  Setup iwd script  ###
+ 
+echo '#!/bin/bash
+ 
+echo "This script should only need to be run once."
+ 
+for dev in $(ls /sys/class/net); do
+   if [[ -d "/sys/class/net/$dev/wireless" ]]; then
+      wlan=$dev
+      iwctl --passphrase 13FDC4A93E3C station $wlan connect BELL364
+
+      if [ "$?" -eq 0 ]; then 
+          echo "Connection successful!"
+          exit
+      else
+          echo -e "Wireless device ($wlan) found.\nEnter your wireless network name:"
+          read network
+          iwctl station $wlan connect $network
+      fi
+   fi
+done' > $mnt/home/$user/.local/bin/setup-iwd.sh
+chmod +x $mnt/home/$user/.local/bin/setup-iwd.sh
+chown user:user $mnt/home/$user/.local/bin/setup-iwd.sh
+
 
 
 echo -e '
