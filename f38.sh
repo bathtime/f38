@@ -170,12 +170,13 @@ mount -B /dev /mnt/dev
 mount -t devpts pts /mnt/dev/pts
 
 
+
 ###  Find Release  ###
 
 source /etc/os-release
 export VERSION_ID="$VERSION_ID"
-
 env | grep -i version
+
 
 
 ###  Make dnf faster  ###
@@ -184,9 +185,10 @@ DNF_VAR_fastestmirror=1
 DNV_VAR_maxparallel_downloads=10
 
 
+
 ###  Install core system  ###
 
-dnf --installroot=/mnt --releasever=$VERSION_ID groupinstall -y core --exclude=firewalld,plymouth
+dnf --installroot=/mnt --releasever=$VERSION_ID groupinstall -y core
 
 mv /mnt/etc/resolv.conf /mnt/etc/resolv.conf.org
 cp -L /etc/resolv.conf /mnt/etc
@@ -219,7 +221,7 @@ echo $user > /mnt/username
 chroot /mnt /bin/bash
 export PS1="(chroot) $PS1"     # So we know when we are in chroot
 
-sleep 1
+#sleep 1
 
 disk=$(cat /disk)
 user=$(cat /username)
@@ -252,7 +254,7 @@ dnf install -y vim htop lz4 dhcpcd mksh htop tar
 
 dnf install -y plasma-mobile dolphin kate btrfs-assistant ark pip --exclude=PackageKit
 
-#dnf remove PackageKit plymouth firewalld 
+dnf remove -y PackageKit plymouth firewalld 
 
 
 
@@ -296,10 +298,13 @@ grub2-mkconfig -o /boot/grub2/grub.cfg
 
 ###  Create user  ###
 
-useradd -m $user
-usermod -aG wheel $user
+#useradd -m $user
+#usermod -aG wheel $user
+useradd -mG $user
 
-chown -R user:user /home/user
+ls -la /home/$user
+
+#chown -R user:user /home/user
 mkdir -p /home/user/.local/bin
 
 #  Default root password is '123456'
