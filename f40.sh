@@ -221,7 +221,7 @@ cp -L /etc/resolv.conf $mnt/etc
 
 ###  Generate /etc/fstab  ###
 
-#dnf install -y arch-install-scripts
+dnf install -y arch-install-scripts
 genfstab -U $mnt >> $mnt/etc/fstab
 
 # Using subvolids in fstab will result in error message when creating snapshots
