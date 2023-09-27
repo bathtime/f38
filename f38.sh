@@ -135,7 +135,6 @@ btrfs subvolume create @
 btrfs subvolume create @cache
 btrfs subvolume create @log
 btrfs subvolume create @vartmp
-btrfs subvolume create @homecache
 btrfs subvolume create @snapshots
 
 cd
@@ -143,12 +142,11 @@ umount /mnt
 
 mount -o compress=zstd,noatime,subvol=@ $disk'4' /mnt
 
-mkdir -p /mnt/{boot,var/{log,cache,tmp},tmp,home/user/.cache,.snapshots}
+mkdir -p /mnt/{boot,var/{log,cache,tmp},tmp,.snapshots}
 
 mount -o compress=zstd,noatime,subvol=@log $disk'4' /mnt/var/log
 mount -o compress=zstd,noatime,subvol=@cache $disk'4' /mnt/var/cache
 mount -o compress=zstd,noatime,subvol=@vartmp $disk'4' /mnt/var/tmp
-mount -o compress=zstd,noatime,subvol=@homecache $disk'4' /mnt/home/user/.cache
 mount -o compress=zstd,noatime,subvol=@snapshots $disk'4' /mnt/.snapshots
 
 chattr +C /mnt/var/log /mnt/var/cache /mnt/var/tmp
@@ -189,11 +187,6 @@ dnf --installroot=/mnt --releasever=$VERSION_ID groupinstall -y core --exclude=f
 
 mv /mnt/etc/resolv.conf /mnt/etc/resolv.conf.org
 cp -L /etc/resolv.conf /mnt/etc
-
-
-
-# Check if nocow
-lsattr -d / /var/{cache,log,tmp} /tmp /home/user/.cache /home/user /.snapshots
 
 
 
