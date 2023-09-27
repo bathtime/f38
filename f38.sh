@@ -51,7 +51,10 @@ read -e -p "Enter the user name you'd like to create (blank will revert to 'user
 if [[ "$user" == "" ]]; then
    user=user
 fi
-user=user
+
+
+#user=user
+
 
 echo -e "\nSetup config:\n\ndisk: $disk\nuser: $user\n"
 read -e -p "This drive will be completely written over! Would you like to proceed (y or n)? " proceed
@@ -69,14 +72,14 @@ setenforce 0
 sgdisk --zap-all $disk
 
 sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' << EOF | gdisk $disk
-d
-1
-d
-2
-d
-3
-d
-4
+d     # Delete partition
+1     # Partition 1
+d     # Delete partition
+2     # Partition 2
+d     # Delete partition
+3     # Partition 3
+d     # Delete partition
+4     # Partition 4
 n     # Add a new partition
       # Partition number (Accept default: 1)
       # First sector (Accept default: varies)
