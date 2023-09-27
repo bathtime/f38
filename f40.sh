@@ -90,7 +90,6 @@ fi
 # Selinux can cause some problems with the install so deactivate for now
 setenforce 0
 
-sgdisk --zap-all $disk
 
 sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' << EOF | fdisk $disk
 d     # Delete partition
