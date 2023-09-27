@@ -210,8 +210,7 @@ DNV_VAR_maxparallel_downloads=10
 
 ###  Install core system  ###
 
-
-mv $mnt/etc/resolv.conf $mnt/etc/resolv.conf.org
+[[ -f $mnt/etc/resolv.conf ]] && mv $mnt/etc/resolv.conf $mnt/etc/resolv.conf.org
 cp -L /etc/resolv.conf $mnt/etc
 
 
