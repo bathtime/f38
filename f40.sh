@@ -289,7 +289,7 @@ dnf install -y iw iwl* iwd
 ###  Install extra tool applications ###
 
 dnf install -y vim htop lz4 dhcpcd mksh htop tar
-#dnf install -y plasma-mobile dolphin kate btrfs-assistant ark pip --exclude=PackageKit
+dnf install -y plasma-mobile dolphin kate btrfs-assistant ark pip --exclude=PackageKit
 
 # Remove cruft
 dnf remove -y PackageKit plymouth firewalld 
